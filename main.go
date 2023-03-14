@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/gob"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -12,6 +11,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/patrickmn/go-cache"
@@ -84,9 +85,9 @@ func getSalahsTimes(uuid string, key string) (map[string]interface{}, error) {
 	return decodedResponse, nil
 }
 
-func playAzan() {
-	azanDir := filepath.Join(".", "media", "azan")
-	duaDir := filepath.Join(".", "media", "duaa")
+func play(aDir string, dDir string) {
+	azanDir := filepath.Join(".", "media", aDir)
+	duaDir := filepath.Join(".", "media", dDir)
 
 	azanFiles, err := ioutil.ReadDir(azanDir)
 
@@ -118,8 +119,33 @@ func playAzan() {
 func main() {
 	response, err := getSalahsTimes("8695b116-07e4-44a7-a8c6-df8f6006bdf7", "salah-times")
 	if err != nil {
-		fmt.Println("Error:", err)
+		log.Fatal("Error:", err)
 	} else {
-		fmt.Println(response)
+		now := time.Now()
+		dayOfYear := now.YearDay()
+		todayAzans := response["model"].(map[string]interface{})["salahTimings"].([]interface{})[dayOfYear].(map[string]interface{})
+		salats := map[string]int{"fajr": 0, "zuhr": 1, "asr": 2, "maghrib": 3, "isha": 4}
+		azans := make(map[string]string)
+		for key, value := range todayAzans {
+			if _, ok := salats[key]; ok {
+				azans[key] = value.(string)
+			}
+		}
+
+		for key, azan := range azans {
+			timeParts := strings.Split(azan, ":")
+			hour, _ := strconv.Atoi(timeParts[0])
+			minute, _ := strconv.Atoi(timeParts[1])
+			if now.Hour() == hour && now.Minute() == minute {
+				if key == "fajr" {
+					continue
+				}
+				if key == "maghrib" && now.After(time.Date(2023, 3, 23, 0, 0, 0, 0, time.Local)) && now.Before(time.Date(2023, 4, 22, 0, 0, 0, 0, time.Local)) {
+					// Use special azan during Ramadan
+					play("azan-ramadan", "duaa")
+				}
+				play("azan", "duaa")
+			}
+		}
 	}
 }
