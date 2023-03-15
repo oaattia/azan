@@ -44,7 +44,7 @@ func getSalahsTimes(uuid string, key string) (map[string]interface{}, error) {
 	}
 
 	// Create a new cache instance from the items loaded from the file
-	c := cache.NewFrom(cache.DefaultExpiration, cache.DefaultExpiration, items)
+	c := cache.NewFrom(time.Duration(7*24*time.Hour), time.Duration(0), items)
 
 	// Check if the key is present in the cache
 	if cachedResponse, found := c.Get(key); found {
@@ -64,7 +64,7 @@ func getSalahsTimes(uuid string, key string) (map[string]interface{}, error) {
 		}
 
 		// Create a new cache item for the key and value
-		c.Set(key, decodedResponse, cache.DefaultExpiration)
+		c.Set(key, decodedResponse, time.Duration(7*24*time.Hour))
 
 		// Encode the updated cache items to the file
 		err = file.Truncate(0)
