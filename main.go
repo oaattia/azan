@@ -143,6 +143,7 @@ func main() {
 				if key == "maghrib" && now.After(time.Date(2023, 3, 23, 0, 0, 0, 0, time.Local)) && now.Before(time.Date(2023, 4, 22, 0, 0, 0, 0, time.Local)) {
 					// Use special azan during Ramadan
 					play("azan-ramadan", "duaa")
+					return
 				}
 				play("azan", "duaa")
 			}
