@@ -27,7 +27,11 @@ I use crontab to schedule running every minute.
 * * * * * /home/pi/salah
 ```
 
-Create a directory on rasperry pi with directory `azan` and `duaa` and the binary file downloaded.
+Create a directory on rasperry pi with directory `media` under this directory `azan` and `duaa` directory is placed and the binary file downloaded.
+
+`azan` is the azan dir contain all the wav files for the azans which can played randomly everytime if there is many files
+
+`duaa` is the duaa dir contain all the wav files for the duaa which can played randomly after azan
 
 Place in azan اذان dir any wav file you would like to play and also put in `duaa` دعاء another wav file for the duaa دعاء you want to play after azan.
 
