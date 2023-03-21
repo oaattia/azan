@@ -138,7 +138,8 @@ func main() {
 			minute, _ := strconv.Atoi(timeParts[1])
 			if now.Hour() == hour && now.Minute() == minute {
 				if key == "fajr" {
-					continue
+					play("azan-fajr", "duaa")
+					return
 				}
 				if key == "maghrib" && now.After(time.Date(2023, 3, 23, 0, 0, 0, 0, time.Local)) && now.Before(time.Date(2023, 4, 22, 0, 0, 0, 0, time.Local)) {
 					// Use special azan during Ramadan

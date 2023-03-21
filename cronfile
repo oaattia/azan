@@ -1,0 +1,3 @@
+# so it looks like if the cron is not configured correctly we will need to do it like that 
+
+* * * * * /home/pi/azan && ./salah
